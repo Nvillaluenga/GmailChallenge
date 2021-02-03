@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "16cd556d-85ab-4515-b351-8bdd0d5a56cd",
+		"name": "GMailChallenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetEmails",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/EMails",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"EMails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PostEmails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"Fecha\": \"2021-02-02T21:11:10.6146205-03:00\",\r\n  \"From\": \"Nachito\",\r\n  \"Subject\": \"DevOps\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/EMails",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"EMails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReadEmails",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/ReadEmails",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"ReadEmails"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
