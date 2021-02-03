@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmailChallenge", "Gmail Challenge\GmailChallenge.csproj", "{FF2D9764-86A5-4C49-B542-4790895F8F29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmailChallenge", "GmailChallenge\GmailChallenge.csproj", "{FF2D9764-86A5-4C49-B542-4790895F8F29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

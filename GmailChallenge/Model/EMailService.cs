@@ -8,7 +8,10 @@ using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GmailChallenge.Model
 {
@@ -24,26 +27,53 @@ namespace GmailChallenge.Model
             _gMailService = GetGmailService();
 
         }
+
+        public object JSonSerializer { get; private set; }
+
         public int AddDevOpsEmails()
         {
-            UsersResource.LabelsResource.ListRequest request = _gMailService.Users.Labels.List("me");
+            var messageRequest = _gMailService.Users.Messages.List("me");
+            messageRequest.Q = "subject: DevOps";
 
-            // List labels.
-            IList<Label> labels = request.Execute().Labels;
-            Console.WriteLine("Labels:");
-            if (labels != null && labels.Count > 0)
+            var messages = (List<Message>)messageRequest.Execute().Messages;
+
+            var messageCount = messages?.Count ?? 0;
+
+            List<EMail> eMails = new List<EMail> { };
+            List<Task> tasks = new List<Task> { };
+            Console.WriteLine("DevOps messages:");
+            if (messageCount > 0)
             {
-                foreach (var labelItem in labels)
+                foreach (var messageId in messages.Select(m => m.Id))
                 {
-                    Console.WriteLine("{0}", labelItem.Name);
+                    var task = Task.Run(() =>
+                    {
+                        var message = _gMailService.Users.Messages.Get("me", messageId).Execute();
+                        var messagePartSubject = message.Payload.Headers.FirstOrDefault(h => h.Name == "Subject");
+                        var messagePartFrom = message.Payload.Headers.FirstOrDefault(h => h.Name == "From");
+                        var messagePartDate = message.Payload.Headers.FirstOrDefault(h => h.Name == "Date");
+                        eMails.Add(new EMail
+                        {
+                            Fecha = DateTime.Parse(messagePartDate.Value),
+                            From = messagePartFrom.Value,
+                            Subject = messagePartSubject.Value
+                        });
+                    });
+                    tasks.Add(task);
+                }
+                try
+                {
+                    Task.WaitAll(tasks.ToArray());
+                    eMails.ForEach(eMail => _eMailRepository.AddEMail(eMail));
+                }
+                catch (AggregateException exceptions)
+                {
+                    exceptions.InnerExceptions.ToList().ForEach(e =>
+                       Console.WriteLine($"Something failed when reading/writting the emails {e.Message}"));
                 }
             }
-            else
-            {
-                Console.WriteLine("No labels found.");
-            }
-            Console.Read();
-            throw new NotImplementedException();   
+
+            return eMails.Count;
         }
 
         public bool AddEmail(EMail eMail)
