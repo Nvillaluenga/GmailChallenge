@@ -7,7 +7,6 @@
 ```
 dotnet restore
 dotnet build
-dotnet tool restore
 dotnet ef migrations add CreateGmailChallengeDB --project GmailChallenge
 dotnet ef database update --project GmailChallenge
 dotnet run --project GmailChallenge
