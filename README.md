@@ -4,11 +4,17 @@
 - Make sure u have installed .net core 3.1 sdk and have a way to send request (Like Postman)
 
 - Go to the root of the project and Run the following commands
+
+- First time configuration
 ```
 dotnet restore
 dotnet build
 dotnet ef migrations add CreateGmailChallengeDB --project GmailChallenge
 dotnet ef database update --project GmailChallenge
+```
+
+- Run the app
+```
 dotnet run --project GmailChallenge
 ```
 
