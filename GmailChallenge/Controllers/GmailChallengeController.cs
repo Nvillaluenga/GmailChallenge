@@ -55,9 +55,9 @@ namespace GmailChallenge.Controllers
 
         [HttpGet]
         [Route("ReadEmails")]
-        public ActionResult ReadEmails()
+        public ActionResult ReadEmails([FromQuery] string user = "defaultUser")
         {
-            _eMailService.AddDevOpsEmails();
+            _eMailService.AddDevOpsEmails(user);
             return Ok();
         }
     }

@@ -1,16 +1,7 @@
 ﻿using GmailChallenge.Repository;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Gmail.v1.Data;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GmailChallenge.Model
@@ -18,24 +9,19 @@ namespace GmailChallenge.Model
     public class EMailService : IEMailService
     {
         private readonly IEMailRepository _eMailRepository;
-        private readonly IFileProvider _fileProvider;
-        private readonly GmailService _gMailService;
-        public EMailService(IEMailRepository eMailRepository, IFileProvider fileProvider)
+        private readonly IGMailService _gMailService;
+
+        public EMailService(IEMailRepository eMailRepository, IGMailService gMailServiceProvider)
         {
             _eMailRepository = eMailRepository;
-            _fileProvider = fileProvider;
-            _gMailService = GetGmailService();
-
+            _gMailService = gMailServiceProvider;
         }
 
-        public object JSonSerializer { get; private set; }
-
-        public int AddDevOpsEmails()
+        public int AddDevOpsEmails(string user)
         {
-            var messageRequest = _gMailService.Users.Messages.List("me");
-            messageRequest.Q = "subject: DevOps";
+           _gMailService.setGmailService(user);
 
-            var messages = (List<Message>)messageRequest.Execute().Messages;
+            var messages = _gMailService.getMessages("DevOps");
 
             var messageCount = messages?.Count ?? 0;
 
@@ -48,7 +34,7 @@ namespace GmailChallenge.Model
                 {
                     var task = Task.Run(() =>
                     {
-                        var message = _gMailService.Users.Messages.Get("me", messageId).Execute();
+                        var message = _gMailService.getMessage(messageId);
                         var messagePartSubject = message.Payload.Headers.FirstOrDefault(h => h.Name == "Subject");
                         var messagePartFrom = message.Payload.Headers.FirstOrDefault(h => h.Name == "From");
                         var messagePartDate = message.Payload.Headers.FirstOrDefault(h => h.Name == "Date");
@@ -84,33 +70,6 @@ namespace GmailChallenge.Model
         public IEnumerable<EMail> GetEmails()
         {
             return _eMailRepository.GetEMails();
-        }
-
-        private GmailService GetGmailService()
-        {
-            UserCredential credential;
-            var baseRepository = $"{Path.DirectorySeparatorChar}Resources{Path.DirectorySeparatorChar}";
-            using (var stream =
-                _fileProvider.GetFileInfo($"{baseRepository}credentials.json").CreateReadStream())
-            {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = $"{baseRepository}token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    new List<string> { GmailService.Scope.GmailReadonly },
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-                Console.WriteLine("Credential file saved to: " + credPath);
-            }
-
-            // Create Gmail API service.
-            return new GmailService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "GmailChallenge",
-            });
         }
     }
 }

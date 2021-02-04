@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GmailChallenge.Model
 {
@@ -9,6 +6,6 @@ namespace GmailChallenge.Model
     {
         public IEnumerable<EMail> GetEmails();
         public bool AddEmail(EMail eMail);
-        public int AddDevOpsEmails();
+        public int AddDevOpsEmails(string user);
     }
 }
