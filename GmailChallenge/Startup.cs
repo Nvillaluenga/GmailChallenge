@@ -29,6 +29,7 @@ namespace GmailChallenge
                 options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
             services.AddScoped<IEMailRepository, EMailRepository>();
             services.AddScoped<IEMailService, EMailService>();
+            services.AddScoped<IGMailService, GMailService>();
             services.AddSingleton<IFileProvider>(sp => new PhysicalFileProvider(Directory.GetCurrentDirectory()));
         }
 
