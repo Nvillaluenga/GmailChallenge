@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:5001/Api/V1/GmailChallenge/EMails",
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/Email",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -21,7 +21,76 @@
 						"Api",
 						"V1",
 						"GmailChallenge",
-						"EMails"
+						"Email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteEmails",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/Email/10",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"Email",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteEmails Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/Email/10",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"Email",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Doom of emails",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/Email/BlackHole",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"Api",
+						"V1",
+						"GmailChallenge",
+						"Email",
+						"BlackHole"
 					]
 				}
 			},
@@ -42,7 +111,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5001/Api/V1/GmailChallenge/EMails",
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/EMail",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -52,7 +121,7 @@
 						"Api",
 						"V1",
 						"GmailChallenge",
-						"EMails"
+						"EMail"
 					]
 				}
 			},
@@ -76,7 +145,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5001/Api/V1/GmailChallenge/ReadEmails",
+					"raw": "https://localhost:5001/Api/V1/GmailChallenge/Email/ReadEmails?eMailToQuery=Nacho4",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -86,7 +155,14 @@
 						"Api",
 						"V1",
 						"GmailChallenge",
+						"Email",
 						"ReadEmails"
+					],
+					"query": [
+						{
+							"key": "eMailToQuery",
+							"value": "Nacho4"
+						}
 					]
 				}
 			},

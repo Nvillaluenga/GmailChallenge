@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GmailChallenge.Model
 {
-    public class EMailService : IEMailService
+    public class EmailService : IEmailService
     {
-        private readonly IEMailRepository _eMailRepository;
+        private readonly IEmailRepository _emailRepository;
         private readonly IGMailService _gMailService;
 
-        public EMailService(IEMailRepository eMailRepository, IGMailService gMailServiceProvider)
+        public EmailService(IEmailRepository emailRepository, IGMailService gMailServiceProvider)
         {
-            _eMailRepository = eMailRepository;
+            _emailRepository = emailRepository;
             _gMailService = gMailServiceProvider;
         }
 
@@ -21,11 +21,11 @@ namespace GmailChallenge.Model
         {
            _gMailService.setGmailService(user);
 
-            var messages = _gMailService.getMessages("DevOps");
+            var messages = _gMailService.getMessages("DevOps", "DevOps");
 
             var messageCount = messages?.Count ?? 0;
 
-            List<EMail> eMails = new List<EMail> { };
+            List<Email> emails = new List<Email> { };
             List<Task> tasks = new List<Task> { };
             Console.WriteLine("DevOps messages:");
             if (messageCount > 0)
@@ -37,10 +37,10 @@ namespace GmailChallenge.Model
                         var message = _gMailService.getMessage(messageId);
                         var messagePartSubject = message.Payload.Headers.FirstOrDefault(h => h.Name == "Subject");
                         var messagePartFrom = message.Payload.Headers.FirstOrDefault(h => h.Name == "From");
-                        var messagePartDate = message.Payload.Headers.FirstOrDefault(h => h.Name == "Date");
-                        eMails.Add(new EMail
+                        var messagePartDate = (long)message.InternalDate;
+                        emails.Add(new Email
                         {
-                            Fecha = DateTime.Parse(messagePartDate.Value),
+                            Fecha = DateTimeOffset.FromUnixTimeMilliseconds(messagePartDate).UtcDateTime,
                             From = messagePartFrom.Value,
                             Subject = messagePartSubject.Value
                         });
@@ -50,7 +50,7 @@ namespace GmailChallenge.Model
                 try
                 {
                     Task.WaitAll(tasks.ToArray());
-                    eMails.ForEach(eMail => _eMailRepository.AddEMail(eMail));
+                    emails.ForEach(email => _emailRepository.AddEmail(email));
                 }
                 catch (AggregateException exceptions)
                 {
@@ -59,17 +59,30 @@ namespace GmailChallenge.Model
                 }
             }
 
-            return eMails.Count;
+            return emails.Count;
         }
 
-        public bool AddEmail(EMail eMail)
+        public bool AddEmail(Email email)
         {
-            return _eMailRepository.AddEMail(eMail);
+            return _emailRepository.AddEmail(email);
+        }
+        public bool DeleteEmail(Email email)
+        {
+            return _emailRepository.DeleteEmail(email);
         }
 
-        public IEnumerable<EMail> GetEmails()
+        public IEnumerable<Email> GetEmails()
         {
-            return _eMailRepository.GetEMails();
+            return _emailRepository.GetEmails();
+        }
+        public Email GetEmail(int emailId)
+        {
+            return _emailRepository.GetEmail(emailId);
+        }
+        public void BlackHoleEmails()
+        {
+            _emailRepository.GetEmails().ToList()
+                .ForEach(email => _emailRepository.DeleteEmail(email));
         }
     }
 }

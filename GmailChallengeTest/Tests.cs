@@ -1,14 +1,12 @@
 using GmailChallenge;
 using GmailChallenge.Model;
 using GmailChallenge.Repository;
-using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Google.Apis.Gmail.v1.UsersResource.MessagesResource;
 
 namespace GmailChallengeTest
 {
@@ -16,7 +14,7 @@ namespace GmailChallengeTest
     public class Tests
     {
         private IGMailService _gMailServiceProviderMock;
-        private IEMailRepository _eMailRepositoryMock;
+        private IEmailRepository _emailRepositoryMock;
         private string _user;
 
         [SetUp]
@@ -54,7 +52,7 @@ namespace GmailChallengeTest
                             },new MessagePartHeader
                             {
                                 Name = "Date",
-                                Value = $"{DateTime.Now}"
+                                Value = $"{DateTime.Now.Ticks}"
                             }
                         }
                     }
@@ -85,7 +83,7 @@ namespace GmailChallengeTest
             };
 
             _gMailServiceProviderMock = Mock.Of<IGMailService>();
-            Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessages(_user))
+            Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessages("DevOps", "DevOps"))
                 .Returns(messagesLite);
 
             Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessage("1"))
@@ -99,8 +97,8 @@ namespace GmailChallengeTest
             Mock.Get(_gMailServiceProviderMock).Setup(gr => gr.setGmailService(It.IsAny<string>()))
                 .Verifiable(); ;
 
-            _eMailRepositoryMock = Mock.Of<IEMailRepository>();
-            Mock.Get(_eMailRepositoryMock).Setup(er => er.AddEMail(It.IsAny<EMail>()));
+            _emailRepositoryMock = Mock.Of<IEmailRepository>();
+            Mock.Get(_emailRepositoryMock).Setup(er => er.AddEmail(It.IsAny<Email>()));
 
 
         }
@@ -108,8 +106,8 @@ namespace GmailChallengeTest
         [Test]
         public void readEmailTest()
         {
-            var eMailService = new EMailService(_eMailRepositoryMock, _gMailServiceProviderMock);
-            var output = eMailService.AddDevOpsEmails("Example");
+            var emailService = new EmailService(_emailRepositoryMock, _gMailServiceProviderMock);
+            var output = emailService.AddDevOpsEmails("Example");
         }
 
 
