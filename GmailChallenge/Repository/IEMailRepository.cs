@@ -2,10 +2,11 @@
 
 namespace GmailChallenge.Repository
 {
-    public interface IEMailRepository
+    public interface IEmailRepository
     {
-        public bool AddEMail(EMail email);
-        public IEnumerable<EMail> GetEMails();
-
+        public bool AddEmail(Email email);
+        public IEnumerable<Email> GetEmails();
+        public Email GetEmail(int emailId);
+        public bool DeleteEmail(Email email);
     }
 }

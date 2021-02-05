@@ -2,10 +2,13 @@
 
 namespace GmailChallenge.Model
 {
-    public interface IEMailService
+    public interface IEmailService
     {
-        public IEnumerable<EMail> GetEmails();
-        public bool AddEmail(EMail eMail);
+        public IEnumerable<Email> GetEmails();
+        public Email GetEmail(int emailId);
+        public bool AddEmail(Email email);
+        public bool DeleteEmail(Email email);
+        public void BlackHoleEmails();
         public int AddDevOpsEmails(string user);
     }
 }

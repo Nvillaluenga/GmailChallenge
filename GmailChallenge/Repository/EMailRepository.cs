@@ -5,24 +5,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GmailChallenge.Repository
 {
-    public class EMailRepository : IEMailRepository
+    public class EmailRepository : IEmailRepository
     {
         private readonly ApplicationDbContext _appDbContext;
 
-        public EMailRepository(ApplicationDbContext appDbContext)
+        public EmailRepository(ApplicationDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
 
-        public bool AddEMail(EMail email)
+        public bool AddEmail(Email email)
         {
-            _appDbContext.EMails.Add(email);
+            _appDbContext.Emails.Add(email);
             return _appDbContext.SaveChanges() == 1;
         }
 
-        public IEnumerable<EMail> GetEMails()
+        public bool DeleteEmail(Email email)
         {
-            return _appDbContext.EMails.ToList();
+            _appDbContext.Emails.Remove(email);
+            return _appDbContext.SaveChanges() == 1;
+        }
+
+        public Email GetEmail(int emailId)
+        {
+            return _appDbContext.Emails.Find(emailId);
+        }
+
+        public IEnumerable<Email> GetEmails()
+        {
+            return _appDbContext.Emails.ToList();
         }
     }
 }

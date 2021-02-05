@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Threading.Tasks;
 using GmailChallenge.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,46 +10,94 @@ using Microsoft.Extensions.Logging;
 namespace GmailChallenge.Controllers
 {
     [ApiController]
-    [Route("Api/V1/GmailChallenge")]
+    [Route("Api/V1/GmailChallenge/Email")]
     public class GmailChallengeController : ControllerBase
     {
         private readonly ILogger<GmailChallengeController> _logger;
-        private readonly IEMailService _eMailService;
+        private readonly IEmailService _emailService;
 
-        public GmailChallengeController(ILogger<GmailChallengeController> logger, IEMailService eMailService)
+        public GmailChallengeController(ILogger<GmailChallengeController> logger, IEmailService emailService)
         {
             _logger = logger;
-            _eMailService = eMailService;
+            _emailService = emailService;
         }
 
         [HttpGet]
-        [Route("EMails")]
-        public ActionResult<IEnumerable<EMail>> GetEMails()
+        public ActionResult<IEnumerable<Email>> GetEmails()
         {
             try
             {
-                return Ok(_eMailService.GetEmails());
-            } 
-            catch(Exception e)
+                return Ok(_emailService.GetEmails());
+            }
+            catch (Exception e)
             {
-                _logger.LogError(e, "Something went wrong when retrieving EMails.");
+                _logger.LogError(e, "Something went wrong when retrieving Emails.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpPost]
-        [Route("EMails")]
-        public ActionResult PostEMails([FromBody] EMail eMail)
+        [HttpGet]
+        [Route("{emailId:int}")]
+        public ActionResult<IEnumerable<Email>> GetEmail(int emailId)
         {
             try
             {
-                if (!_eMailService.AddEmail(eMail))
-                    throw new Exception($"The Email: {JsonSerializer.Serialize(eMail)} Could not be added.");
+                return Ok(_emailService.GetEmail(emailId));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Something went wrong when retrieving Email.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult PostEmails([FromBody] Email email)
+        {
+            try
+            {
+                if (!_emailService.AddEmail(email))
+                    throw new Exception($"The Email: {JsonSerializer.Serialize(email)} Could not be added.");
                 return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Something went wrong when Adding an EMail.");
+                _logger.LogError(e, "Something went wrong when Adding an Email.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{emailId:int}")]
+        public ActionResult<IEnumerable<Email>> DeleteEmail(int emailId)
+        {
+            try
+            {
+                var email = _emailService.GetEmail(emailId);
+                if (email == null)
+                    return Ok(true); // idempotencia
+                return Ok(_emailService.DeleteEmail(email));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Something went wrong when retrieving Email.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Route("BlackHole")]
+        public ActionResult BlackHoleEmails()
+        {
+            try
+            {
+                _emailService.BlackHoleEmails();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Something went wrong when retrieving Email.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -57,7 +106,7 @@ namespace GmailChallenge.Controllers
         [Route("ReadEmails")]
         public ActionResult ReadEmails([FromQuery] string user = "defaultUser")
         {
-            _eMailService.AddDevOpsEmails(user);
+            _emailService.AddDevOpsEmails(user);
             return Ok();
         }
     }

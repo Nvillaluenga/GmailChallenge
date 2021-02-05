@@ -27,8 +27,8 @@ namespace GmailChallenge
             services.AddControllers();
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
-            services.AddScoped<IEMailRepository, EMailRepository>();
-            services.AddScoped<IEMailService, EMailService>();
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGMailService, GMailService>();
             services.AddSingleton<IFileProvider>(sp => new PhysicalFileProvider(Directory.GetCurrentDirectory()));
         }

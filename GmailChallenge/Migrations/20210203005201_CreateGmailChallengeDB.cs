@@ -8,10 +8,10 @@ namespace Gmail_Challenge.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "EMails",
+                name: "Emails",
                 columns: table => new
                 {
-                    EMailId = table.Column<int>(type: "int", nullable: false)
+                    EmailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     From = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -19,14 +19,14 @@ namespace Gmail_Challenge.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EMails", x => x.EMailId);
+                    table.PrimaryKey("PK_Emails", x => x.EmailId);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EMails");
+                name: "Emails");
         }
     }
 }

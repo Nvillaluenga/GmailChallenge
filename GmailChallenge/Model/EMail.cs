@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GmailChallenge
 {
-    public class EMail
+    public class Email
     {
         [Key]
-        public int EMailId { get; set; }
+        public int EmailId { get; set; }
         
         [Required]
         public DateTime Fecha { get; set; }

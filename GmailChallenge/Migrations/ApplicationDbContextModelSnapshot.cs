@@ -19,9 +19,9 @@ namespace Gmail_Challenge.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("GmailChallenge.EMail", b =>
+            modelBuilder.Entity("GmailChallenge.Email", b =>
                 {
-                    b.Property<int>("EMailId")
+                    b.Property<int>("EmailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -37,9 +37,9 @@ namespace Gmail_Challenge.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EMailId");
+                    b.HasKey("EmailId");
 
-                    b.ToTable("EMails");
+                    b.ToTable("Emails");
                 });
 #pragma warning restore 612, 618
         }

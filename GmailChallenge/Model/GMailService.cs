@@ -20,10 +20,10 @@ namespace GmailChallenge.Model
             _fileProvider = fileProvider;
         }
 
-        public List<Message> getMessages(string subject)
+        public List<Message> getMessages(string body, string subject)
         {
             var messageRequest = gMailService.Users.Messages.List("me");
-            messageRequest.Q = $"subject: {subject}";
+            messageRequest.Q = $"\"{body}\" OR subject:{subject}";
 
             return (List<Message>)messageRequest.Execute().Messages;
         }
@@ -33,7 +33,7 @@ namespace GmailChallenge.Model
             return gMailService.Users.Messages.Get("me", Id).Execute();
         }
 
-        public void setGmailService(string eMailToQuery)
+        public void setGmailService(string emailToQuery)
         {
             UserCredential credential;
             var baseRepository = $"{Path.DirectorySeparatorChar}Resources{Path.DirectorySeparatorChar}";
@@ -46,7 +46,7 @@ namespace GmailChallenge.Model
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     new List<string> { GmailService.Scope.GmailReadonly },
-                    eMailToQuery,
+                    emailToQuery,
                     CancellationToken.None).Result;
                 Console.WriteLine("Credential file saved to: " + credPath);
             }
