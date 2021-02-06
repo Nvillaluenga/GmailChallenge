@@ -94,7 +94,7 @@ namespace GmailChallengeTest
 
 
             _gMailServiceProviderMock = Mock.Of<IGMailService>();
-            Mock.Get(_gMailServiceProviderMock).Setup(gr => gr.setGmailService(It.IsAny<string>()))
+            Mock.Get(_gMailServiceProviderMock).Setup(gr => gr.setGmailService())
                 .Verifiable(); ;
 
             _emailRepositoryMock = Mock.Of<IEmailRepository>();
@@ -107,7 +107,7 @@ namespace GmailChallengeTest
         public void readEmailTest()
         {
             var emailService = new EmailService(_emailRepositoryMock, _gMailServiceProviderMock);
-            var output = emailService.AddDevOpsEmails("Example");
+            var output = emailService.AddDevOpsEmails();
         }
 
 

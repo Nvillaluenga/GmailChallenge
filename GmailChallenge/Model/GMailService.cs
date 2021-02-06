@@ -1,23 +1,25 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.AspNetCore3;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace GmailChallenge.Model
 {
     public class GMailService : IGMailService
     {
-        private readonly IFileProvider _fileProvider;
+        private readonly IGoogleAuthProvider _googleAuthProvider;
         private GmailService gMailService;
 
-        public GMailService(IFileProvider fileProvider)
+        public GMailService(IFileProvider fileProvider, IGoogleAuthProvider googleAuthProvider)
         {
-            _fileProvider = fileProvider;
+            _googleAuthProvider = googleAuthProvider;
         }
 
         public List<Message> getMessages(string body, string subject)
@@ -33,30 +35,28 @@ namespace GmailChallenge.Model
             return gMailService.Users.Messages.Get("me", Id).Execute();
         }
 
-        public void setGmailService(string emailToQuery)
+        public void setGmailService()
         {
-            UserCredential credential;
-            var baseRepository = $"{Path.DirectorySeparatorChar}Resources{Path.DirectorySeparatorChar}";
-            using (var stream =
-                _fileProvider.GetFileInfo($"{baseRepository}credentials.json").CreateReadStream())
+            var task1 = _googleAuthProvider.RequireScopesAsync(GmailService.ScopeConstants.GmailReadonly);
+            task1.Wait();
+            if (!(task1.Result is IActionResult))
             {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = $"{baseRepository}token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    new List<string> { GmailService.Scope.GmailReadonly },
-                    emailToQuery,
-                    CancellationToken.None).Result;
-                Console.WriteLine("Credential file saved to: " + credPath);
+                var task2 = _googleAuthProvider.GetCredentialAsync();
+                task2.Wait();
+                GoogleCredential cred = task2.Result;
+                gMailService = new GmailService(new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = cred
+                });
             }
-
-            // Create Gmail API service.
-            gMailService =  new GmailService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = "GmailChallenge",
-            });
         }
+
+        //public void logOut()
+        //{
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        //    }
+        //}
     }
 }

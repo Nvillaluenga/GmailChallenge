@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GmailChallenge.Model;
+using Google.Apis.Auth.AspNetCore3;
+using Google.Apis.Gmail.v1;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -104,9 +108,14 @@ namespace GmailChallenge.Controllers
 
         [HttpGet]
         [Route("ReadEmails")]
-        public ActionResult ReadEmails([FromQuery] string user = "defaultUser")
+        [GoogleScopedAuthorize(GmailService.ScopeConstants.GmailReadonly)]
+        public ActionResult ReadEmails()
         {
-            _emailService.AddDevOpsEmails(user);
+            if (User.Identity.IsAuthenticated)
+            {
+                HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+            }
+            _emailService.AddDevOpsEmails();
             return Ok();
         }
     }

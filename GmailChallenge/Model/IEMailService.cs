@@ -9,6 +9,6 @@ namespace GmailChallenge.Model
         public bool AddEmail(Email email);
         public bool DeleteEmail(Email email);
         public void BlackHoleEmails();
-        public int AddDevOpsEmails(string user);
+        public int AddDevOpsEmails();
     }
 }
