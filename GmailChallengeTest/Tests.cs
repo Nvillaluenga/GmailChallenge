@@ -15,13 +15,8 @@ namespace GmailChallengeTest
     {
         private IGMailService _gMailServiceProviderMock;
         private IEmailRepository _emailRepositoryMock;
-        private string _user;
-
-        [SetUp]
-        public void Setup()
-        {
-            _user = "Example";
-            var messagesLite = new List<Message>
+        private string _user = "Example";
+        private List<Message> messagesLite = new List<Message>
             {
                 new Message
                 {
@@ -32,11 +27,12 @@ namespace GmailChallengeTest
                     Id = "2"
                 }
             };
-            var messagesFull = new List<Message>
+        private List<Message> messagesFull = new List<Message>
             {
                 new Message
                 {
                     Id = "1",
+                    InternalDate = 2000000,
                     Payload = new MessagePart
                     {
                         Headers = new List<MessagePartHeader>
@@ -60,6 +56,7 @@ namespace GmailChallengeTest
                 new Message
                 {
                     Id = "2",
+                    InternalDate = 2000001,
                     Payload = new MessagePart
                     {
                         Headers = new List<MessagePartHeader>
@@ -82,23 +79,23 @@ namespace GmailChallengeTest
                 }
             };
 
+        [SetUp]
+        public void Setup()
+        {
+
             _gMailServiceProviderMock = Mock.Of<IGMailService>();
             Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessages("DevOps", "DevOps"))
                 .Returns(messagesLite);
-
             Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessage("1"))
                 .Returns(messagesFull.FirstOrDefault(m => m.Id == "1"));
-
             Mock.Get(_gMailServiceProviderMock).Setup(gs => gs.getMessage("2"))
                 .Returns(messagesFull.FirstOrDefault(m => m.Id == "2"));
-
-
-            _gMailServiceProviderMock = Mock.Of<IGMailService>();
             Mock.Get(_gMailServiceProviderMock).Setup(gr => gr.setGmailService())
-                .Verifiable(); ;
+                .Verifiable();
 
             _emailRepositoryMock = Mock.Of<IEmailRepository>();
-            Mock.Get(_emailRepositoryMock).Setup(er => er.AddEmail(It.IsAny<Email>()));
+            Mock.Get(_emailRepositoryMock).Setup(er => er.AddEmail(It.IsAny<Email>()))
+                .Verifiable();
 
 
         }
@@ -108,6 +105,8 @@ namespace GmailChallengeTest
         {
             var emailService = new EmailService(_emailRepositoryMock, _gMailServiceProviderMock);
             var output = emailService.AddDevOpsEmails();
+
+            Assert.AreEqual(messagesFull.Count, output);
         }
 
 
