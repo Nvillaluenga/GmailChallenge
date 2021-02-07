@@ -28,7 +28,7 @@ namespace GmailChallenge
         {
             services.AddControllers();
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlite("name=ConnectionStrings:GmailChallengeConnectionSqlite"));
+                options => options.UseSqlServer("name=ConnectionStrings:GmailChallengeConnectionSqlServer"));
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IGMailService, GMailService>();

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Gmail_Challenge.Migrations
 {
-    public partial class InitialSqliteDbGmailChallenge : Migration
+    public partial class SqlServerDockerInitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,11 +11,11 @@ namespace Gmail_Challenge.Migrations
                 name: "Emails",
                 columns: table => new
                 {
-                    EmailId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Fecha = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    From = table.Column<string>(type: "TEXT", nullable: false),
-                    Subject = table.Column<string>(type: "TEXT", nullable: false)
+                    EmailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    From = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
