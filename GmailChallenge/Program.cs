@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System;
 
 namespace GmailChallenge
 {
@@ -20,6 +21,7 @@ namespace GmailChallenge
                 var counter = 0;
                 while (!db.Database.CanConnect() && counter < maxSecondsToWaitDB)
                 {
+                    Console.WriteLine("Waiting for sql server to start");
                     Task.Delay(1000).Wait();
                     counter += 1;
                 }
