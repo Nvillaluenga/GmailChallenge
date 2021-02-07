@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace GmailChallenge
 {
     public class Program
     {
+        private const int maxSecondsToWaitDB = 40;
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
@@ -15,6 +17,12 @@ namespace GmailChallenge
             using (var scope = host.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var counter = 0;
+                while (!db.Database.CanConnect() && counter < maxSecondsToWaitDB)
+                {
+                    Task.Delay(1000).Wait();
+                    counter += 1;
+                }
                 db.Database.Migrate();
             }
 
