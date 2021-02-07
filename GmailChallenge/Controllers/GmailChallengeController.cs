@@ -80,7 +80,7 @@ namespace GmailChallenge.Controllers
             {
                 var email = _emailService.GetEmail(emailId);
                 if (email == null)
-                    return Ok(true); // idempotencia
+                    return Ok(true);
                 return Ok(_emailService.DeleteEmail(email));
             }
             catch (Exception e)
@@ -116,7 +116,7 @@ namespace GmailChallenge.Controllers
                 HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
             }
             _emailService.AddDevOpsEmails();
-            return Ok();
+            return RedirectToAction("GetEmails");
         }
     }
 }

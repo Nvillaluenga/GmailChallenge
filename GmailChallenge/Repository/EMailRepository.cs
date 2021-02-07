@@ -16,6 +16,9 @@ namespace GmailChallenge.Repository
 
         public bool AddEmail(Email email)
         {
+            //Uncomment this if you don't want to insert repeated emails
+            //var emailFound = _appDbContext.Emails.FirstOrDefault(e => e.Fecha == email.Fecha && e.From == email.From && e.Subject == email.Subject);
+            //if (emailFound == null)
             _appDbContext.Emails.Add(email);
             return _appDbContext.SaveChanges() == 1;
         }

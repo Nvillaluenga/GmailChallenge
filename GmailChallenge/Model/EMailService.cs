@@ -27,7 +27,6 @@ namespace GmailChallenge.Model
 
             List<Email> emails = new List<Email> { };
             List<Task> tasks = new List<Task> { };
-            Console.WriteLine("DevOps messages:");
             if (messageCount > 0)
             {
                 foreach (var messageId in messages.Select(m => m.Id))
