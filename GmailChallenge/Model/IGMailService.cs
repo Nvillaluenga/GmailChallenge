@@ -5,7 +5,7 @@ namespace GmailChallenge.Model
 {
     public interface IGMailService
     {
-        public void setGmailService(string emailToQuery);
+        public void setGmailService();
         public List<Message> getMessages(string body, string subject);
         public Message getMessage(string Id);
     }

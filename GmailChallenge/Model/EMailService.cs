@@ -11,15 +11,15 @@ namespace GmailChallenge.Model
         private readonly IEmailRepository _emailRepository;
         private readonly IGMailService _gMailService;
 
-        public EmailService(IEmailRepository emailRepository, IGMailService gMailServiceProvider)
+        public EmailService(IEmailRepository emailRepository, IGMailService gMailService)
         {
             _emailRepository = emailRepository;
-            _gMailService = gMailServiceProvider;
+            _gMailService = gMailService;
         }
 
-        public int AddDevOpsEmails(string user)
+        public int AddDevOpsEmails()
         {
-           _gMailService.setGmailService(user);
+           _gMailService.setGmailService();
 
             var messages = _gMailService.getMessages("DevOps", "DevOps");
 
